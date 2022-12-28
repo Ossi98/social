@@ -1,0 +1,29 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  ENV: '.env'
+  REQUIRMENTS: 'requirements.txt'
+
+job1:
+  stage: test
+  tags:
+    - cli 
+  script:
+    - test -s $ENV
+    - test -s $REQUIRMENTS
+
+job2:
+  stage: deploy
+  image: "docker"
+  tags:
+    - container
+  
+  script:
+    - docker compose down  &>/dev/null && echo 'Removed old stack app'
+    - docker compose up -d
+
+  rules:
+    - if : '$CI_COMMIT_REF_NAME == "main"'

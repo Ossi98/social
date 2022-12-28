@@ -1,0 +1,32 @@
+services:
+  api:
+    build: .
+    depends_on:
+      - db_postgres
+    networks:
+      - mon_bridge_api
+    ports:
+      - "8080:80"
+    volumes:
+      - volume_env_files:/code/
+
+  db_postgres:
+    image: postgres
+    networks:
+      - mon_bridge_api
+    ports:
+      - "8888:5432"
+    volumes:
+  
+      - "volume_databases:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_DB=$DB_NAME
+
+networks:
+  mon_bridge_api:
+
+volumes:
+  volume_env_files:
+  volume_databases:
